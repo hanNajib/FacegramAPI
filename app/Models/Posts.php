@@ -12,6 +12,7 @@ class Posts extends Model
 
     protected $guarded = [];
     public $timestamps = false;
+    protected $hidden = ['user_id'];
 
     public function attachments(): HasMany {
         return $this->hasMany(PostAttachments::class, "post_id");

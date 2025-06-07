@@ -21,11 +21,13 @@ Route::prefix('v1')->group(function() {
     });
 
     Route::prefix('users')->middleware("auth:sanctum")->group(function() {
+        Route::get('', [UserController::class, 'getUser']);
+        Route::get('{username}', [UserController::class, 'getDetailUser']);
         Route::post('{username}/follow', [UserController::class, 'follow']);
         Route::delete('{username}/unfollow', [UserController::class, 'unfollow']);
         Route::get('{username}/following', [UserController::class, 'getFollowing']);
+        Route::get('{username}/followers', [UserController::class, 'getFollowers']);
+        Route::put('{username}/accept', [UserController::class, 'accept']);
     });
-
-
 
 });

@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 
 class User extends Authenticatable
 {
@@ -74,6 +75,21 @@ class User extends Authenticatable
 
     public function followers()
     {
-        return $this->belongsToMany(User::class, 'follow', 'following_id', 'follower_id');
+        return $this->belongsToMany(User::class, 'follow', 'following_id', 'follower_id')
+                    ->withPivot('is_accepted');
+    }
+
+    public function isYourAccount() {
+        return FacadesAuth::user()->id === $this->id ? true : false;
+    }
+
+    public function followingStatus(): string 
+    {
+        $follow = Follow::where([
+            'follower_id' => Auth::id(),
+            'following_id' => $this->id
+        ])->first();
+
+        return $follow ? ($follow->is_accepted ? 'following' : 'requested') : 'not-following';
     }
 }
